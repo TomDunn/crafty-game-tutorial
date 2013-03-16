@@ -97,10 +97,13 @@ Crafty.scene('Victory', function() {
 Crafty.scene('Loading', function(){
 	// Draw some text for the player to see in case the file
 	//  takes a noticeable amount of time to load
-	Crafty.e('2D, DOM, Text')
-		.text('Loading; please wait...')
+	var loading_text = Crafty.e('2D, DOM, Text')
+		.text('Loading, please wait...')
 		.attr({ x: 0, y: Game.height()/2 - 24, w: Game.width() })
 		.css($text_css);
+
+    // hide the play button
+    $('#game-start').hide();
 
 	// Load our sprite map image
 	Crafty.load([
@@ -152,6 +155,15 @@ Crafty.scene('Loading', function(){
 		});
 
 		// Now that our sprites are ready to draw, start the game
-		Crafty.scene('Game');
+		//Crafty.scene('Game');
+        
+        //show the start game button
+        $('#game-start').show();
+        loading_text.destroy();
+        //when it is clicked, hide all the text and start game
+        $('#game-start').click(function(e) {
+            $('#loading').hide();
+            Crafty.scene('Game');
+        });
 	})
 });
