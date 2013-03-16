@@ -105,6 +105,7 @@ Crafty.scene('Loading', function(){
 	// Load our sprite map image
 	Crafty.load([
 		'assets/16x16_forest_2.gif',
+        'assets/spears.gif',
 		'assets/hunter.png',
 		'assets/door_knock_3x.mp3',
 		'assets/door_knock_3x.ogg',
@@ -129,6 +130,13 @@ Crafty.scene('Loading', function(){
 			spr_village: [0, 1],
 			spr_rock:    [1, 1]
 		});
+
+        Crafty.sprite(16, 'assets/spears.gif', {
+            spr_spear_up:       [0,0],
+            spr_spear_right:    [1,0],
+            spr_spear_down:     [0,1],
+            spr_spear_left:     [1,1]
+        });
 
 		// Define the PC's sprite to be the first sprite in the third row of the
 		//  animation sprite map
