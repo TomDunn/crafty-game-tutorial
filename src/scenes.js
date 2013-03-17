@@ -12,8 +12,14 @@ Crafty.scene('Game', function() {
 	}
 
 	// Player character, placed at 5, 5 on our grid
-	this.player = Crafty.e('PlayerCharacter').at(5, 5);
-	this.occupied[this.player.at().x][this.player.at().y] = true;
+	player = Crafty.e('PlayerCharacter').at(5, 5);
+    // follow our player, better performance than Crafty.viewport.follow ;-)
+    player.bind('Move', function() {
+        Crafty.viewport.scroll('_x', -(player.x + (player.w / 2) - (Crafty.viewport.width / 2)));
+        Crafty.viewport.scroll('_y', -(player.y + (player.h / 2) - (Crafty.viewport.height / 2)));
+    });
+
+	this.occupied[player.at().x][player.at().y] = true;
 
 	// Place a tree at every edge square on our grid of 16x16 tiles
 	for (var x = 0; x < Game.map_grid.width; x++) {

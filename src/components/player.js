@@ -1,10 +1,5 @@
 // This is the player-controlled character
 Crafty.c('PlayerCharacter', {
-    // idk yet
-    weapon: {
-        firerate: 18,
-        name: "Weapon1"
-    },
 
     facing: {
         right:  0,
@@ -12,10 +7,15 @@ Crafty.c('PlayerCharacter', {
     },
 
 	init: function() {
-		this.requires('Actor, Fourway, Collision, spr_player, SpriteAnimation')
+		this.requires('Actor, Collision, spr_player, SpriteAnimation, Orientable')
 			.fourway(2)
 			.stopOnSolids()
 			.onHit('Village', this.visitVillage)
+            // give em a weapon
+            .attr({
+                weapon:     Crafty.e('Weapon'),
+                weapons:    []
+            })
 			// These next lines define our four animations
 			//  each call to .animate specifies:
 			//  - the name of the animation
@@ -40,52 +40,27 @@ Crafty.c('PlayerCharacter', {
             });
 
 		// Watch for a change of direction and switch animations accordingly
-		var animation_speed = 4;
+		var animation_speed = 12;
 		this.bind('NewDirection', function(data) {
 			if (data.x > 0) {
 				this.animate('PlayerMovingRight', animation_speed, -1);
-                this.facing.right = 1;
-                this.facing.up = 0;
 			} else if (data.x < 0) {
 				this.animate('PlayerMovingLeft', animation_speed, -1);
-                this.facing.right = -1;
-                this.facing.up = 0;
 			} else if (data.y > 0) {
 				this.animate('PlayerMovingDown', animation_speed, -1);
-                this.facing.up = -1;
-                this.facing.right = 0;
 			} else if (data.y < 0) {
 				this.animate('PlayerMovingUp', animation_speed, -1);
-                this.facing.up = 1;
-                this.facing.right = 0;
 			} else {
 				this.stop();
 			}
 		}).bind("EnterFrame", function(frame) {
             if (frame.frame % this.weapon.firerate == 0) {
                 if (this.keyDown) {
-                    this.shoot();
+                    this.weapon.shoot(this);
                 }
             }
         });
 	},
-
-    shoot:  function() {
-        var bullet = Crafty.e(this.weapon.name);
-        bullet.attr({
-            playerID:   this[0],
-            x:          this._x + (this.facing.right * this._w),
-            y:          this._y - (this.facing.up * this._h),
-            xspeed:     8 * this.facing.right,
-            yspeed:     8 * this.facing.up
-        });
-
-        if      (this.facing.right > 0) bullet.addComponent("spr_spear_right");
-        else if (this.facing.right < 0) bullet.addComponent("spr_spear_left");
-        else if (this.facing.up    > 0) bullet.addComponent("spr_spear_up");
-        else                            bullet.addComponent("spr_spear_down");
-
-    },
 
 	// Registers a stop-movement function to be called when
 	//  this entity hits an entity with the "Solid" component
